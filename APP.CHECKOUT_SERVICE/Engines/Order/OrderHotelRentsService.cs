@@ -624,8 +624,10 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
 
                     };
                     order_summit.obj_order.SystemType = Common.Common.GetSystemTypeByOrderNo(order_summit.obj_order.OrderNo);
+                    Telegram.pushLog("APP.CHECKOUT_SERVICE - OrderHotelRentsService - Voucher: " +((data_list[0].voucher_code != null && data_list[0].voucher_code.Trim() != "")? data_list[0].voucher_code:"NULL"));
+
                     //--apply voucher:
-                    if(data_list[0].voucher_code!=null && data_list[0].voucher_code.Trim() != "")
+                    if (data_list[0].voucher_code!=null && data_list[0].voucher_code.Trim() != "")
                     {
 
                         var input = new B2BTrackingVoucherRequest
