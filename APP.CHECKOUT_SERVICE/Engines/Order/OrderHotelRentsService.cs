@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Utilities.Contants;
+using ADAVIGO_FRONTEND.Models.Flights.TrackingVoucher;
 
 namespace APP.CHECKOUT_SERVICE.Engines.Order
 {
@@ -550,7 +551,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                                 SupplierId = 0,
                                 ReservationCode = "",
                                 StatusOld = 0,
-
+                                
                             },
                             rooms = rooms,
                             extrapackages = extrapackages,
@@ -591,7 +592,6 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     {
                         Amount = total_amount,
                         Profit = total_profit,
-                        Discount = 0,
                         ClientId = Convert.ToInt64(message.client_id),
                         ContractId = null,
                         CreateTime = DateTime.Now,
@@ -618,12 +618,61 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                         Price = total_amount - total_profit,
                         CreatedBy = Convert.ToInt64(ConfigurationManager.AppSettings["Created_By_BotID"]),
                         SupplierId = 0,
-                        Note = ""
-
+                        Note = "",
+                        VoucherId = 0,
+                        Discount = 0,
 
                     };
                     order_summit.obj_order.SystemType = Common.Common.GetSystemTypeByOrderNo(order_summit.obj_order.OrderNo);
+                    //--apply voucher:
+                    if(data_list[0].voucher_code!=null && data_list[0].voucher_code.Trim() != "")
+                    {
+                        var input = new B2BTrackingVoucherRequest
+                        {
+                            project_type = 1,
+                            service_id = data_list[0].booking_data.propertyId,
+                            total_order_amount_before = (double)order_summit.obj_order.Amount,
+                            user_id = Convert.ToInt64(data_list[0].account_client_id),
+                            voucher_name = data_list[0].voucher_code
+                        };
+                        var voucher_apply = await ApplyVoucher(input);
+                        if (voucher_apply != null && voucher_apply.status == 0)
+                        {
+                            double total_discount = 0;
+                            double percent = Convert.ToDouble(voucher_apply.value);       
+                            foreach (var booking in order_summit.obj_hotel_rent)
+                            {
+                                foreach(var room in booking.rooms)
+                                {
+                                    foreach (var rate in room.rates)
+                                    {
+                                        int nights = Convert.ToInt32(((DateTime)rate.rates.EndDate - (DateTime)rate.rates.StartDate).TotalDays);
+                                        switch (voucher_apply.type)
+                                        {
+                                            case "percent":
+                                                //Tinh số tiền giảm theo %
+                                                total_discount += ((double)rate.rates.TotalAmount * Convert.ToDouble(percent / 100) * nights);
+                                                break;
+                                            case "vnd":
+                                                total_discount += (percent * nights); //Math.Min(Convert.ToDouble(voucher.LimitTotalDiscount), total_fee_not_luxury) ;
+                                                break;
 
+                                            default: break;
+
+                                        }
+                                    }
+                                }
+                            }
+                            voucher_apply.discount=total_discount;
+                            voucher_apply.total_order_amount_after = voucher_apply.total_order_amount_before - total_discount;
+                            order_summit.obj_order.VoucherId = voucher_apply.voucher_id;
+                            order_summit.obj_order.Discount = voucher_apply.discount;
+                            order_summit.obj_order.Amount = voucher_apply.total_order_amount_after;
+                            order_summit.obj_order.Profit -= order_summit.obj_order.Discount;
+
+                        }
+                    }
+                  
                 }
             }
             catch (Exception ex)
@@ -656,6 +705,32 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                 {
                     var resultContent_2 = Newtonsoft.Json.Linq.JObject.Parse(response.Content.ReadAsStringAsync().Result);
                     result = JsonConvert.DeserializeObject<List<BookingHotelMongoViewModel>>(resultContent_2["data"].ToString());
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
+        }
+        private async Task<B2BTrackingVoucherResponse> ApplyVoucher(B2BTrackingVoucherRequest input)
+        {
+            B2BTrackingVoucherResponse result = new B2BTrackingVoucherResponse();
+            try
+            {
+                string url = ConfigurationManager.AppSettings["domain_api_core"] + ConfigurationManager.AppSettings["APPLY_VOUCHER_B2B"];
+                HttpClient client = new HttpClient();
+                
+                var token = CommonHelper.Encode(JsonConvert.SerializeObject(input), ConfigurationManager.AppSettings["key_encrypt_b2b"]);
+                var content_2 = new FormUrlEncodedContent(new[]
+                {
+                       new KeyValuePair<string, string>("token", token),
+                });
+                var response = await client.PostAsync(url, content_2);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    result = JsonConvert.DeserializeObject<B2BTrackingVoucherResponse>(response.Content.ReadAsStringAsync().Result);
 
                 }
             }

@@ -1269,7 +1269,7 @@ namespace APP.CHECKOUT_SERVICE.Model
             try
             {
 
-                SqlParameter[] objParam_order = new SqlParameter[18];
+                SqlParameter[] objParam_order = new SqlParameter[19];
                 objParam_order[0] = new SqlParameter("@HotelBookingId", booking.HotelBookingId);
                 objParam_order[1] = new SqlParameter("@RoomTypeID", booking.RoomTypeId);
                 objParam_order[2] = new SqlParameter("@Price", booking.Price);
@@ -1295,6 +1295,7 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[17] = new SqlParameter("@SupplierId", DBNull.Value);
                 }
+                objParam_order[18] = new SqlParameter("@IsRoomAvailable", 1);
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.CreateHotelBookingRooms, objParam_order);
                 booking.Id = id;
                 return id;
