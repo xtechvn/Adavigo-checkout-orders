@@ -627,6 +627,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     //--apply voucher:
                     if(data_list[0].voucher_code!=null && data_list[0].voucher_code.Trim() != "")
                     {
+
                         var input = new B2BTrackingVoucherRequest
                         {
                             project_type = 1,
@@ -636,8 +637,10 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                             voucher_name = data_list[0].voucher_code
                         };
                         var voucher_apply = await ApplyVoucher(input);
+                        Telegram.pushLog("APP.CHECKOUT_SERVICE - OrderHotelRentsService - ApplyVoucher: " + voucher_apply==null? "NULL": JsonConvert.SerializeObject(voucher_apply));
                         if (voucher_apply != null && voucher_apply.status == 0)
                         {
+
                             double total_discount = 0;
                             double percent = Convert.ToDouble(voucher_apply.value);       
                             foreach (var booking in order_summit.obj_hotel_rent)
