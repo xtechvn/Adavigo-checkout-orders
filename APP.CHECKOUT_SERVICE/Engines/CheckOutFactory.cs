@@ -43,6 +43,8 @@ namespace APP.CHECKOUT_SERVICE.Engines
             try
             {
                 Console.WriteLine("Input: " + JsonConvert.SerializeObject(order_info));
+                Telegram.pushLog("APP.CHECKOUT_SERVICE - OrderHotelRentsService - DoSomeRealWork: "
+                                         + "Input: " + JsonConvert.SerializeObject(order_info));
                 //0. Detect dịch vụ
                 switch (order_info.service_type)
                 {
