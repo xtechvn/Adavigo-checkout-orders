@@ -480,9 +480,9 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
 
                             rooms.Add(room_detail);
                         }
-                        if(data.booking_b2b_data.extrapackages!=null && data.booking_b2b_data.extrapackages.Count > 0)
+                        if (data.extrapackages != null && data.extrapackages.Count > 0)
                         {
-                            foreach (var ex in data.booking_b2b_data.extrapackages)
+                            foreach (var ex in data.extrapackages)
                             {
                                 total_amount += (double)ex.Amount;
                                 total_price += (double)ex.SalePrice;
@@ -491,6 +491,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                                 booking_amount += (double)ex.Amount;
                                 booking_profit += (double)ex.Profit;
                                 booking_price += (double)ex.SalePrice;
+                                TimeZoneInfo utcPlus7Zone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
                                 var extrapackages_detail = new HotelBookingRoomExtraPackages()
                                 {
                                     PackageId = ex.PackageId,
@@ -499,8 +500,8 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                                     HotelBookingRoomId = ex.HotelBookingRoomId,
                                     Amount = ex.Amount,
                                     UnitPrice = ex.UnitPrice,
-                                    StartDate = ex.StartDate,
-                                    EndDate = ex.EndDate,
+                                    StartDate =   TimeZoneInfo.ConvertTimeFromUtc((DateTime)ex.StartDate, utcPlus7Zone),
+                                    EndDate = TimeZoneInfo.ConvertTimeFromUtc((DateTime)ex.EndDate, utcPlus7Zone),
                                     Profit = ex.Profit,
                                     PackageCompanyId = ex.PackageCompanyId,
                                     OperatorPrice = ex.OperatorPrice,
@@ -509,15 +510,15 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                                     Quantity = ex.Quantity,
                                     CreatedBy = ex.CreatedBy,
                                     SupplierId = ex.SupplierId,
-                                    CreatedDate=DateTime.Now,
-                                    UpdatedDate=DateTime.Now,
-                                    UpdatedBy=0
+                                    CreatedDate = DateTime.Now,
+                                    UpdatedDate = DateTime.Now,
+                                    UpdatedBy = 0
                                 };
-                                
+
                                 extrapackages.Add(extrapackages_detail);
                             }
                         }
-                      
+
                         var booking_item_summit = new HotelRentOrderSummitDetail()
                         {
                             booking = new HotelBooking()
@@ -563,6 +564,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                         };
                         order_summit.obj_hotel_rent.Add(booking_item_summit);
                     }
+                   
                     order_summit.obj_contact_client = new ContactClientViewModel()
                     {
                         ClientId = Convert.ToInt64(message.client_id),
