@@ -2198,32 +2198,39 @@ namespace APP.CHECKOUT_SERVICE.Model
             }
 
         }
-        public static int CreateHotelBookingRoomExtraPackages(HotelBookingRoomExtraPackages booking)
+        public static int CreateHotelBookingRoomExtraPackages(HotelBookingRoomExtraPackages packages)
         {
             try
             {
 
                 SqlParameter[] objParam_order = new SqlParameter[17];
-                objParam_order[0] = new SqlParameter("@PackageId", booking.PackageId);
-                objParam_order[1] = new SqlParameter("@PackageCode", booking.PackageCode);
-                objParam_order[2] = new SqlParameter("@HotelBookingId", booking.HotelBookingId);
-                objParam_order[3] = new SqlParameter("@HotelBookingRoomID", booking.HotelBookingRoomId);
-                objParam_order[4] = new SqlParameter("@Amount", booking.Amount);
-                objParam_order[5] = new SqlParameter("@StartDate", booking.StartDate);
-                objParam_order[6] = new SqlParameter("@EndDate", booking.EndDate);
-                objParam_order[7] = new SqlParameter("@Profit", booking.Profit);
-                objParam_order[8] = new SqlParameter("@PackageCompanyId", booking.PackageCompanyId);
-                objParam_order[9] = new SqlParameter("@OperatorPrice", booking.OperatorPrice);
-                objParam_order[10] = new SqlParameter("@SalePrice", booking.SalePrice);
-                objParam_order[11] = new SqlParameter("@Nights", booking.Nights);
-                objParam_order[12] = new SqlParameter("@Quantity", booking.Quantity);
-                objParam_order[13] = new SqlParameter("@CreatedBy", booking.CreatedBy);
-                objParam_order[14] = new SqlParameter("@CreatedDate", DBNull.Value);
-                objParam_order[15] = new SqlParameter("@UnitPrice", booking.SupplierId);
-                objParam_order[16] = new SqlParameter("@SupplierId", booking.UnitPrice);
+                objParam_order[0] = new SqlParameter("@PackageId", packages.PackageId);
+                objParam_order[1] = new SqlParameter("@PackageCode", packages.PackageCode);
+                objParam_order[2] = new SqlParameter("@HotelBookingId", packages.HotelBookingId);
+                objParam_order[3] = new SqlParameter("@HotelBookingRoomID", packages.HotelBookingRoomId);
+                objParam_order[4] = new SqlParameter("@Amount", packages.Amount);
+                objParam_order[5] = new SqlParameter("@CreatedBy", packages.CreatedBy);
+                objParam_order[6] = new SqlParameter("@CreatedDate", packages.CreatedDate);
+                objParam_order[7] = new SqlParameter("@StartDate", packages.StartDate);
+                objParam_order[8] = new SqlParameter("@EndDate", packages.EndDate);
+                objParam_order[9] = new SqlParameter("@Profit", packages.Profit);
+                objParam_order[10] = new SqlParameter("@PackageCompanyId", packages.PackageCompanyId);
+                objParam_order[11] = new SqlParameter("@OperatorPrice", packages.OperatorPrice);
+                objParam_order[12] = new SqlParameter("@SalePrice", packages.SalePrice);
+                objParam_order[13] = new SqlParameter("@Nights", packages.Nights);
+                objParam_order[14] = new SqlParameter("@Quantity", packages.Quantity);
+                objParam_order[15] = new SqlParameter("@UnitPrice", packages.UnitPrice);
+                if (packages.SupplierId != null)
+                {
+                    objParam_order[16] = new SqlParameter("@SupplierId", packages.SupplierId);
+                }
+                else
+                {
+                    objParam_order[16] = new SqlParameter("@SupplierId", DBNull.Value);
+                }
 
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.SP_InsertHotelBookingRoomExtraPackages, objParam_order);
-                booking.Id = id;
+                packages.Id = id;
                 return id;
             }
             catch (Exception ex)

@@ -491,24 +491,29 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                                 booking_amount += (double)ex.Amount;
                                 booking_profit += (double)ex.Profit;
                                 booking_price += (double)ex.SalePrice;
-                                var extrapackages_detail = new HotelBookingRoomExtraPackages();
-                                extrapackages_detail.PackageId = ex.PackageId;
-                                extrapackages_detail.PackageCode = ex.PackageCode;
-                                extrapackages_detail.HotelBookingId = ex.HotelBookingId;
-                                extrapackages_detail.HotelBookingRoomId = ex.HotelBookingRoomId;
-                                extrapackages_detail.Amount = ex.Amount;
-                                extrapackages_detail.UnitPrice = ex.UnitPrice;
-                                extrapackages_detail.StartDate = ex.StartDate;
-                                extrapackages_detail.EndDate = ex.EndDate;
-                                extrapackages_detail.Profit = ex.Profit;
-                                extrapackages_detail.PackageCompanyId = ex.PackageCompanyId;
-                                extrapackages_detail.OperatorPrice = ex.OperatorPrice;
-                                extrapackages_detail.SalePrice = ex.SalePrice;
-                                extrapackages_detail.Nights = ex.Nights;
-                                extrapackages_detail.Quantity = ex.Quantity;
-                                extrapackages_detail.CreatedBy = ex.CreatedBy;
-                                extrapackages_detail.SupplierId = ex.SupplierId;
-
+                                var extrapackages_detail = new HotelBookingRoomExtraPackages()
+                                {
+                                    PackageId = ex.PackageId,
+                                    PackageCode = ex.PackageCode,
+                                    HotelBookingId = ex.HotelBookingId,
+                                    HotelBookingRoomId = ex.HotelBookingRoomId,
+                                    Amount = ex.Amount,
+                                    UnitPrice = ex.UnitPrice,
+                                    StartDate = ex.StartDate,
+                                    EndDate = ex.EndDate,
+                                    Profit = ex.Profit,
+                                    PackageCompanyId = ex.PackageCompanyId,
+                                    OperatorPrice = ex.OperatorPrice,
+                                    SalePrice = ex.SalePrice,
+                                    Nights = ex.Nights,
+                                    Quantity = ex.Quantity,
+                                    CreatedBy = ex.CreatedBy,
+                                    SupplierId = ex.SupplierId,
+                                    CreatedDate=DateTime.Now,
+                                    UpdatedDate=DateTime.Now,
+                                    UpdatedBy=0
+                                };
+                                
                                 extrapackages.Add(extrapackages_detail);
                             }
                         }
@@ -556,8 +561,6 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                             rooms = rooms,
                             extrapackages = extrapackages,
                         };
-
-
                         order_summit.obj_hotel_rent.Add(booking_item_summit);
                     }
                     order_summit.obj_contact_client = new ContactClientViewModel()
