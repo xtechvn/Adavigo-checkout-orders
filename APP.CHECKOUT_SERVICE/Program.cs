@@ -36,7 +36,7 @@ namespace APP.CHECKOUT_SERVICE
             try
             {
                 //MailService mailService = new MailService();
-                //mailService.sendMailVinWonder(12224);
+               
 
                 #region READ QUEUE
                 var factory = new ConnectionFactory()
