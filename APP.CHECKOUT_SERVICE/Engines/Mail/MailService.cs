@@ -35,7 +35,6 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
                 //var currentDirectory = Directory.GetParent(projectDirectory).Parent.Parent.FullName;
                 var template = projectDirectory + @"/EmailTemplate/OrderTemplate.html";
                 var subject = "";
-
                 try
                 {
                      subject = File.ReadAllText(template);
