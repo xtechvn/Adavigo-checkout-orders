@@ -31,7 +31,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
             try
             {
                 //2 get template mail
-                string projectDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetCurrentDirectory();
                 //var currentDirectory = Directory.GetParent(projectDirectory).Parent.Parent.FullName;
                 var template = projectDirectory + @"/EmailTemplate/OrderTemplate.html";
                 var subject = "";
@@ -281,7 +281,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
             try
             {
                 //2 get template mail
-                string projectDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetCurrentDirectory();
                 var template = projectDirectory + @"/EmailTemplate/B2B/MailTemplateB2B.html";
                 var subject = "";
                 try
@@ -468,7 +468,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
             try
             {
                 //2 get template mail
-                string projectDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetCurrentDirectory();
                 var template = projectDirectory + @"/EmailTemplate/VinWonder/MailTemplateVinWonder.html";
                 string subject = "";
                 try
