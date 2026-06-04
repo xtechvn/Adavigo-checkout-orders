@@ -20,7 +20,7 @@ using Utilities.Contants;
 
 namespace APP.CHECKOUT_SERVICE.Engines.Order
 {
-    public class OrderTourBookingService: IOrderTourBookingService
+    public class OrderTourBookingService : IOrderTourBookingService
     {
         public int createOrder(TourSummit order_info, OrderEntities order_queue)
         {
@@ -171,34 +171,34 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                 summit_model = new TourSummit();
                 summit_model.order = new OrderViewModel()
                 {
-                    AccountClientId= account_client_id,
-                    Amount=0,
-                    BankCode="",
-                    Id=message.order_id,
-                    BookingInfo=JsonConvert.SerializeObject(message),
-                    BranchCode=0,
-                    ClientId= client.ClientId,
-                    ContactClientId=0,
+                    AccountClientId = account_client_id,
+                    Amount = 0,
+                    BankCode = "",
+                    Id = message.order_id,
+                    BookingInfo = JsonConvert.SerializeObject(message),
+                    BranchCode = 0,
+                    ClientId = client.ClientId,
+                    ContactClientId = 0,
                     CreatedBy = Convert.ToInt64(ConfigurationManager.AppSettings["Created_By_BotID"]),
                     CreateTime = DateTime.Now,
-                    Description="",
-                    Discount=0,
-                    EndDate=DateTime.Now,
-                    ExpriryDate=DateTime.Now.AddHours(4),
-                    IsFinishPayment=false,
-                    Exists_id=0,
-                    Label="",
-                    Note="",
-                    OrderNo=message.order_no,
-                    OrderStatus=0,
-                    StartDate=DateTime.Now,
+                    Description = "",
+                    Discount = 0,
+                    EndDate = DateTime.Now,
+                    ExpriryDate = DateTime.Now.AddHours(4),
+                    IsFinishPayment = false,
+                    Exists_id = 0,
+                    Label = "",
+                    Note = "",
+                    OrderNo = message.order_no,
+                    OrderStatus = 0,
+                    StartDate = DateTime.Now,
                     UserUpdateId = Convert.ToInt64(ConfigurationManager.AppSettings["Created_By_BotID"]),
                     UpdateLast = DateTime.Now,
-                    ServiceType=Convert.ToByte(message.service_type),
-                    ProductService=message.service_type,
-                    Profit=0,
-                    PaymentStatus=0,
-                    PaymentType=0,
+                    ServiceType = Convert.ToByte(message.service_type),
+                    ProductService = message.service_type,
+                    Profit = 0,
+                    PaymentStatus = 0,
+                    PaymentType = 0,
                     SalerId = 0,
                     SalerGroupId = "",
                     SystemType = 2,
@@ -207,42 +207,46 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                 string contact_client_name = tour_info[0].contact.firstName + " " + tour_info[0].contact.lastName;
                 summit_model.obj_contact_client = new ContactClientViewModel()
                 {
-                    ClientId=client.ClientId,
-                    CreateDate=DateTime.Now,
-                    Email=tour_info[0].contact.email.Length >50 ? tour_info[0].contact.email.Substring(0,50): tour_info[0].contact.email,
-                    Mobile=tour_info[0].contact.phoneNumber.Length > 50 ? tour_info[0].contact.phoneNumber.Substring(0, 50) : tour_info[0].contact.phoneNumber,
-                    Name= contact_client_name.Length > 50 ? contact_client_name.Substring(0, 50) : contact_client_name,
-                    OrderId=message.order_id,
-                    Id=0
+                    ClientId = client.ClientId,
+                    CreateDate = DateTime.Now,
+                    Email = tour_info[0].contact.email.Length > 50 ? tour_info[0].contact.email.Substring(0, 50) : tour_info[0].contact.email,
+                    Mobile = tour_info[0].contact.phoneNumber.Length > 50 ? tour_info[0].contact.phoneNumber.Substring(0, 50) : tour_info[0].contact.phoneNumber,
+                    Name = contact_client_name.Length > 50 ? contact_client_name.Substring(0, 50) : contact_client_name,
+                    OrderId = message.order_id,
+                    Id = 0
                 };
-                
-                if(tour_info[0].tour_product!= null && tour_info[0].tour_product.Id > 0)
+
+                if (tour_info[0].tour_product != null && tour_info[0].tour_product.Id > 0)
                 {
                     var data = tour_info[0].tour_product;
                     var packages = tour_info[0].packages;
                     var adt_price = packages != null && packages.Id > 0 ? packages.AdultPrice : data.Price;
                     var chd_price = packages != null && packages.Id > 0 ? packages.ChildPrice : data.Price;
-                  
-                   
+                    var inf_price = packages != null && packages.Id > 0 ? packages.InfPrice : data.Price;
+                    var adt_profit = packages != null && packages.Id > 0 ? packages.AdtProfit * tour_info[0].guest.adult : 0;
+                    var chd_profit = packages != null && packages.Id > 0 ? packages.ChildPrice * tour_info[0].guest.adult : 0;
+                    var inf_profit = packages != null && packages.Id > 0 ? packages.InfProfit * tour_info[0].guest.adult : 0;
+
+
                     summit_model.packages = new List<ViewModel.Tour.TourPackages>();
                     summit_model.packages.Add(new ViewModel.Tour.TourPackages()
                     {
-                        Id=0,
-                        Amount= (adt_price * (tour_info[0].guest.adult <= 0 ? 1 : tour_info[0].guest.adult)),
-                        AmountBeforeVat= (adt_price * (tour_info[0].guest.adult <= 0 ? 1 : tour_info[0].guest.adult)),
-                        AmountVat=0,
-                        BasePrice= adt_price,
+                        Id = 0,
+                        Amount = (adt_price * (tour_info[0].guest.adult <= 0 ? 1 : tour_info[0].guest.adult)),
+                        AmountBeforeVat = (adt_price * (tour_info[0].guest.adult <= 0 ? 1 : tour_info[0].guest.adult)),
+                        AmountVat = 0,
+                        BasePrice = adt_price,
                         CreatedBy = Convert.ToInt32(ConfigurationManager.AppSettings["Created_By_BotID"]),
                         CreatedDate = DateTime.Now,
                         UpdatedBy = Convert.ToInt32(ConfigurationManager.AppSettings["Created_By_BotID"]),
                         UpdatedDate = DateTime.Now,
-                        PackageCode= "adt_amount",
-                        PackageName= "Người lớn",
-                        Profit=0,
-                        Quantity=tour_info[0].guest.adult,
-                        TourId=0,
-                        UnitPrice= (chd_price * (tour_info[0].guest.child <= 0 ? 0 : tour_info[0].guest.child)),
-                        Vat=0
+                        PackageCode = "adt_amount",
+                        PackageName = "Người lớn",
+                        Profit = adt_profit ,
+                        Quantity = tour_info[0].guest.adult,
+                        TourId = 0,
+                        UnitPrice = (chd_price * (tour_info[0].guest.child <= 0 ? 0 : tour_info[0].guest.child)),
+                        Vat = 0
                     });
                     summit_model.packages.Add(new ViewModel.Tour.TourPackages()
                     {
@@ -257,7 +261,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                         UpdatedDate = DateTime.Now,
                         PackageCode = "chd_amount",
                         PackageName = "Trẻ em (2-14 tuổi)",
-                        Profit = 0,
+                        Profit = chd_profit,
                         Quantity = tour_info[0].guest.child,
                         TourId = 0,
                         UnitPrice = (chd_price * (tour_info[0].guest.child <= 0 ? 0 : tour_info[0].guest.child)),
@@ -266,23 +270,23 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     summit_model.packages.Add(new ViewModel.Tour.TourPackages()
                     {
                         Id = 0,
-                        Amount = 0,
-                        AmountBeforeVat =0,
+                        Amount = (inf_price * (tour_info[0].guest.infant <= 0 ? 0 : tour_info[0].guest.infant)),
+                        AmountBeforeVat = (inf_price * (tour_info[0].guest.infant <= 0 ? 0 : tour_info[0].guest.infant)),
                         AmountVat = 0,
-                        BasePrice = data.Price,
+                        BasePrice = inf_price,
                         CreatedBy = Convert.ToInt32(ConfigurationManager.AppSettings["Created_By_BotID"]),
                         CreatedDate = DateTime.Now,
                         UpdatedBy = Convert.ToInt32(ConfigurationManager.AppSettings["Created_By_BotID"]),
                         UpdatedDate = DateTime.Now,
                         PackageCode = "inf_amount",
                         PackageName = "Em bé (0-2 tuổi)",
-                        Profit = 0,
-                        Quantity = 0,
+                        Profit = inf_profit,
+                        Quantity = tour_info[0].guest.infant,
                         TourId = 0,
-                        UnitPrice = 0,
+                        UnitPrice = (inf_price * (tour_info[0].guest.infant <= 0 ? 0 : tour_info[0].guest.infant)),
                         Vat = 0
                     });
-                    var amount = (adt_price * (tour_info[0].guest.adult <= 0 ? 1 : tour_info[0].guest.adult)) + (chd_price * (tour_info[0].guest.child <= 0 ? 0 : tour_info[0].guest.child));
+                    var amount = (adt_price * (tour_info[0].guest.adult <= 0 ? 1 : tour_info[0].guest.adult)) + (chd_price * (tour_info[0].guest.child <= 0 ? 0 : tour_info[0].guest.child)) + (inf_price * (tour_info[0].guest.infant <= 0 ? 0 : tour_info[0].guest.infant));
                     summit_model.booking = new ViewModel.Tour.TourViewModel()
                     {
                         CreatedBy = Convert.ToInt32(ConfigurationManager.AppSettings["Created_By_BotID"]),
@@ -314,9 +318,9 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                         TourType = data.TourType,
                         Commission = 0,
                         OthersAmount = 0,
-                        FundCustomerCare=0
+                        FundCustomerCare = 0
                     };
-                    summit_model.order.Amount = summit_model.packages.Sum(x=>x.Amount);
+                    summit_model.order.Amount = summit_model.packages.Sum(x => x.Amount);
                     summit_model.order.Price = summit_model.order.Amount;
                 }
 
@@ -363,7 +367,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
         {
             try
             {
-                if ( order_id > 0)
+                if (order_id > 0)
                 {
                     var orderInfo = Repository.getOrderDetailBigint(order_id);
                     return orderInfo;
