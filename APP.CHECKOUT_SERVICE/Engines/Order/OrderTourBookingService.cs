@@ -183,7 +183,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     CreateTime = DateTime.Now,
                     Description = "",
                     Discount = 0,
-                    EndDate = DateTime.Now,
+                    EndDate = ((DateTime)tour_info[0].packages.FromDate).AddDays((int)tour_info[0].tour_product.Days),
                     ExpriryDate = DateTime.Now.AddHours(4),
                     IsFinishPayment = false,
                     Exists_id = 0,
