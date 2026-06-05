@@ -191,7 +191,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     Note = "",
                     OrderNo = message.order_no,
                     OrderStatus = 0,
-                    StartDate = DateTime.Now,
+                    StartDate = tour_info[0].packages.FromDate,
                     UserUpdateId = Convert.ToInt64(ConfigurationManager.AppSettings["Created_By_BotID"]),
                     UpdateLast = DateTime.Now,
                     ServiceType = Convert.ToByte(message.service_type),
@@ -298,8 +298,8 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                         AdditionInfo = data.AdditionInfo,
                         Avatar = data.Avatar,
                         Days = data.Days,
-                        EndDate = tour_info[0].start_date.AddDays((int)data.Days),
-                        StartDate = tour_info[0].start_date,
+                        EndDate = ((DateTime)tour_info[0].packages.FromDate).AddDays((int)data.Days),
+                        StartDate = tour_info[0].packages.FromDate,
                         Id = 0,
                         Image = data.Image,
                         IsDisplayWeb = true,
@@ -318,9 +318,10 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                         TourType = data.TourType,
                         Commission = 0,
                         OthersAmount = 0,
-                        FundCustomerCare = 0
+                        FundCustomerCare = 0,
                     };
                     summit_model.order.Amount = summit_model.packages.Sum(x => x.Amount);
+                    summit_model.order.Profit = summit_model.packages.Sum(x => x.Profit);
                     summit_model.order.Price = summit_model.order.Amount;
                 }
 
