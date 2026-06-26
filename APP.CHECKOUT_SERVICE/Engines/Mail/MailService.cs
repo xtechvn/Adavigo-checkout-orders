@@ -31,11 +31,18 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
             try
             {
                 //2 get template mail
-                string projectDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetCurrentDirectory();
                 //var currentDirectory = Directory.GetParent(projectDirectory).Parent.Parent.FullName;
                 var template = projectDirectory + @"/EmailTemplate/OrderTemplate.html";
-                var subject = File.ReadAllText(template);
+                var subject = "";
+                try
+                {
+                     subject = File.ReadAllText(template);
 
+                }
+                catch {
+                    subject = EmailTemplateStaticModel.FlybookingB2C;
+                }
                 if (order_id == -1)
                 {
                     Telegram.pushLog("Service sendMailOrderB2C. Create order Fail. order_id = " + order_id);
@@ -274,10 +281,18 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
             try
             {
                 //2 get template mail
-                string projectDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetCurrentDirectory();
                 var template = projectDirectory + @"/EmailTemplate/B2B/MailTemplateB2B.html";
-                var subject = File.ReadAllText(template);
+                var subject = "";
+                try
+                {
+                    subject = File.ReadAllText(template);
 
+                }
+                catch
+                {
+                    subject = EmailTemplateStaticModel.MailTemplateB2B;
+                }
                 if (order_id == -1)
                 {
                     Telegram.pushLog("Service sendMailOrderB2B. Create order Fail. order_id = " + order_id);
@@ -453,10 +468,17 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
             try
             {
                 //2 get template mail
-                string projectDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetCurrentDirectory();
                 var template = projectDirectory + @"/EmailTemplate/VinWonder/MailTemplateVinWonder.html";
-                var subject = File.ReadAllText(template);
-
+                string subject = "";
+                try
+                {
+                    subject = File.ReadAllText(template);
+                }
+                catch
+                {
+                    subject = EmailTemplateStaticModel.MailTemplateVinWonder;
+                }
                 if (order_id == -1)
                 {
                     Telegram.pushLog("Service sendMailVinWonder. Create order Fail. order_id = " + order_id);
@@ -678,7 +700,16 @@ namespace APP.CHECKOUT_SERVICE.Engines.Mail
                 var User = Repository.getUserDetail((long)order.SalerId);
                 string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 var template = workingDirectory + @"/EmailTemplate/OrderHotelMailTemplate.html";
-                string body = File.ReadAllText(template);
+                string body = "";
+                try
+                {
+                    body = File.ReadAllText(template);
+                }
+                catch
+                {
+                    body = EmailTemplateStaticModel.HotelBookingB2B;
+                }
+
                 var client = Repository.getContactClient((int)order.ContactClientId);
 
                 if (order != null)

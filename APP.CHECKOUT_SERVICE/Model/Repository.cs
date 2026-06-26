@@ -409,14 +409,14 @@ namespace APP.CHECKOUT_SERVICE.Model
         {
             try
             {
-                SqlParameter[] objParam_order = new SqlParameter[34];
+                SqlParameter[] objParam_order = new SqlParameter[35];
                 objParam_order[0] = new SqlParameter("@OrderNo", order_info.obj_order.OrderNo);
-                objParam_order[1] = new SqlParameter("@ServiceType", order_info.obj_order.ServiceType);
+                objParam_order[1] = new SqlParameter("@ServiceType", order_info.obj_order.ServiceType==null?3: order_info.obj_order.ServiceType);
                 objParam_order[2] = new SqlParameter("@Amount", order_info.obj_order.Amount);
                 objParam_order[3] = new SqlParameter("@CreateTime", order_info.obj_order.CreateTime);
                 objParam_order[4] = new SqlParameter("@ClientId", order_info.obj_order.ClientId);
                 objParam_order[5] = new SqlParameter("@ContactClientId", order_info.obj_contact_client.Id);
-                objParam_order[6] = new SqlParameter("@OrderStatus", order_info.obj_order.OrderStatus);
+                objParam_order[6] = new SqlParameter("@OrderStatus", "0");
                 if (order_info.obj_order.ContractId != null)
                 {
                     objParam_order[7] = new SqlParameter("@ContractId", order_info.obj_order.ContractId);
@@ -430,7 +430,7 @@ namespace APP.CHECKOUT_SERVICE.Model
                     order_info.obj_order.PaymentType = 0;
                 }
                 objParam_order[8] = new SqlParameter("@PaymentType", order_info.obj_order.PaymentType);
-                objParam_order[9] = new SqlParameter("@BankCode", order_info.obj_order.BankCode);
+                objParam_order[9] = new SqlParameter("@BankCode", order_info.obj_order.BankCode==null? "Techcombank" : order_info.obj_order.BankCode);
                 if (order_info.obj_order.PaymentDate != null)
                 {
                     objParam_order[10] = new SqlParameter("@PaymentDate", order_info.obj_order.PaymentDate);
@@ -448,16 +448,16 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[11] = new SqlParameter("@PaymentNo", DBNull.Value);
                 }
-                objParam_order[12] = new SqlParameter("@Profit", order_info.obj_order.Profit);
-                objParam_order[13] = new SqlParameter("@Discount", order_info.obj_order.Discount);
-                objParam_order[14] = new SqlParameter("@PaymentStatus", order_info.obj_order.PaymentStatus);
+                objParam_order[12] = new SqlParameter("@Profit", order_info.obj_order.Profit != null ? order_info.obj_order.Profit : 0);
+                objParam_order[13] = new SqlParameter("@Discount", order_info.obj_order.Discount!=null? order_info.obj_order.Discount :0);
+                objParam_order[14] = new SqlParameter("@PaymentStatus", order_info.obj_order.PaymentStatus != null ? order_info.obj_order.PaymentStatus : 0);
                 objParam_order[15] = new SqlParameter("@OrderId", order_info.obj_order.Id);
-                objParam_order[16] = new SqlParameter("@ExpriryDate", order_info.obj_order.ExpriryDate);
-                objParam_order[17] = new SqlParameter("@ProductService", order_info.obj_order.ProductService.ToString());
+                objParam_order[16] = new SqlParameter("@ExpriryDate", order_info.obj_order.ExpriryDate != null ? order_info.obj_order.ExpriryDate : DateTime.Now);
+                objParam_order[17] = new SqlParameter("@ProductService", "3");
                 objParam_order[18] = new SqlParameter("@AccountClientId", order_info.obj_order.AccountClientId);
-                objParam_order[19] = new SqlParameter("@StartDate", order_info.obj_order.StartDate);
-                objParam_order[20] = new SqlParameter("@EndDate", order_info.obj_order.EndDate);
-                objParam_order[21] = new SqlParameter("@SystemType", order_info.obj_order.SystemType);
+                objParam_order[19] = new SqlParameter("@StartDate", order_info.obj_order.StartDate != null ? order_info.obj_order.StartDate :DateTime.Now);
+                objParam_order[20] = new SqlParameter("@EndDate", order_info.obj_order.EndDate != null ? order_info.obj_order.EndDate : DateTime.Now);
+                objParam_order[21] = new SqlParameter("@SystemType", order_info.obj_order.SystemType != null ? order_info.obj_order.SystemType : 0);
                 objParam_order[22] = new SqlParameter("@SalerId", order_info.obj_order.SalerId);
                 if (order_info.obj_order.SalerId != null)
                 {
@@ -467,8 +467,8 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[22] = new SqlParameter("@SalerId", DBNull.Value);
                 }
-                objParam_order[23] = new SqlParameter("@SalerGroupId", order_info.obj_order.SalerGroupId);
-                objParam_order[24] = new SqlParameter("@UserUpdateId", order_info.obj_order.UserUpdateId);
+                objParam_order[23] = new SqlParameter("@SalerGroupId", order_info.obj_order.SalerGroupId != null ? order_info.obj_order.SalerGroupId : DBNull.Value);
+                objParam_order[24] = new SqlParameter("@UserUpdateId", order_info.obj_order.UserUpdateId != null ? order_info.obj_order.UserUpdateId : DBNull.Value);
 
                 if (order_info.obj_order.PercentDecrease != null)
                 {
@@ -505,11 +505,11 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[28] = new SqlParameter("@VoucherId", DBNull.Value);
                 }
-                objParam_order[29] = new SqlParameter("@CreatedBy", order_info.obj_order.CreatedBy);
+                objParam_order[29] = new SqlParameter("@CreatedBy", order_info.obj_order.CreatedBy != null ? order_info.obj_order.CreatedBy : DBNull.Value);
                 order_info.obj_order.SupplierId = 0;
                 objParam_order[30] = new SqlParameter("@SupplierId", order_info.obj_order.SupplierId);
                 objParam_order[31] = new SqlParameter("@Note", order_info.obj_order.Note);
-                objParam_order[32] = new SqlParameter("@UtmMedium", order_info.obj_order.UtmMedium);
+                objParam_order[32] = new SqlParameter("@UtmMedium", order_info.obj_order.UtmMedium != null ? order_info.obj_order.UtmMedium : 0);
                 if (order_info.obj_order.UtmSource != null)
                 {
                     objParam_order[33] = new SqlParameter("@UtmSource", order_info.obj_order.UtmSource);
@@ -518,7 +518,7 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[33] = new SqlParameter("@UtmSource", DBNull.Value);
                 }
-
+                objParam_order[34] = new SqlParameter("@IsMKT", DBNull.Value);
 
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.CreateOrder, objParam_order);
                 order_info.obj_order.Id = id;
@@ -535,7 +535,7 @@ namespace APP.CHECKOUT_SERVICE.Model
         {
             try
             {
-                SqlParameter[] objParam_order = new SqlParameter[34];
+                SqlParameter[] objParam_order = new SqlParameter[35];
                 objParam_order[0] = new SqlParameter("@OrderNo", order_info.obj_order.OrderNo);
                 objParam_order[1] = new SqlParameter("@ServiceType", order_info.obj_order.ServiceType);
                 objParam_order[2] = new SqlParameter("@Amount", order_info.obj_order.Amount);
@@ -646,7 +646,7 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[33] = new SqlParameter("@UtmSource", DBNull.Value);
                 }
-
+                objParam_order[34] = new SqlParameter("@IsMKT", DBNull.Value);
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.CreateOrder, objParam_order);
                 order_info.obj_order.Id = id;
                 return id;
@@ -661,7 +661,7 @@ namespace APP.CHECKOUT_SERVICE.Model
         {
             try
             {
-                SqlParameter[] objParam_order = new SqlParameter[34];
+                SqlParameter[] objParam_order = new SqlParameter[35];
                // SqlParameter[] objParam_order = new SqlParameter[31];
                 objParam_order[0] = new SqlParameter("@OrderNo", order_info.OrderNo);
                 objParam_order[1] = new SqlParameter("@ServiceType", order_info.ServiceType);
@@ -778,7 +778,8 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     objParam_order[33] = new SqlParameter("@UtmSource", DBNull.Value);
                 }
-
+                objParam_order[34] = new SqlParameter("@IsMKT", DBNull.Value);
+                
 
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.CreateOrder, objParam_order);
                 order_info.Id = id;
@@ -990,9 +991,9 @@ namespace APP.CHECKOUT_SERVICE.Model
             {
                 SqlParameter[] objParam_order = new SqlParameter[53];
                 objParam_order[0] = new SqlParameter("@OrderId", model.OrderId);
-                objParam_order[1] = new SqlParameter("@PriceId", model.PriceId);
+                objParam_order[1] = new SqlParameter("@PriceId", model.Leg == 1 ? 0 : model.PriceId);
                 objParam_order[2] = new SqlParameter("@BookingCode", model.BookingCode);
-                objParam_order[3] = new SqlParameter("@Amount", model.Amount);
+                objParam_order[3] = new SqlParameter("@Amount", model.Leg == 1 ? 0 : model.Amount);
                 objParam_order[4] = new SqlParameter("@Difference", model.Difference);
                 objParam_order[5] = new SqlParameter("@Currency", model.Currency);
                 objParam_order[6] = new SqlParameter("@Flight", model.Flight);
@@ -1003,33 +1004,33 @@ namespace APP.CHECKOUT_SERVICE.Model
                 objParam_order[11] = new SqlParameter("@EndPoint", model.EndPoint);
                 objParam_order[12] = new SqlParameter("@GroupClass", model.GroupClass);
                 objParam_order[13] = new SqlParameter("@Leg", model.Leg);
-                objParam_order[14] = new SqlParameter("@AdultNumber", model.AdultNumber);
-                objParam_order[15] = new SqlParameter("@ChildNumber", model.ChildNumber);
-                objParam_order[16] = new SqlParameter("@InfantNumber", model.InfantNumber);
-                objParam_order[17] = new SqlParameter("@FareAdt", model.FareAdt);
-                objParam_order[18] = new SqlParameter("@FareChd", model.FareChd);
-                objParam_order[19] = new SqlParameter("@FareInf", model.FareInf);
-                objParam_order[20] = new SqlParameter("@TaxAdt", model.TaxAdt);
-                objParam_order[21] = new SqlParameter("@TaxChd", model.TaxChd);
-                objParam_order[22] = new SqlParameter("@TaxInf", model.TaxInf);
-                objParam_order[23] = new SqlParameter("@FeeAdt", model.FeeAdt);
-                objParam_order[24] = new SqlParameter("@FeeChd", model.FeeChd);
-                objParam_order[25] = new SqlParameter("@FeeInf", model.FeeInf);
+                objParam_order[14] = new SqlParameter("@AdultNumber", model.Leg == 1 ? 0 : model.AdultNumber);
+                objParam_order[15] = new SqlParameter("@ChildNumber", model.Leg == 1 ? 0 : model.ChildNumber);
+                objParam_order[16] = new SqlParameter("@InfantNumber", model.Leg == 1 ? 0 : model.InfantNumber);
+                objParam_order[17] = new SqlParameter("@FareAdt", model.Leg == 1 ? 0 : model.FareAdt);
+                objParam_order[18] = new SqlParameter("@FareChd", model.Leg == 1 ? 0 : model.FareChd);
+                objParam_order[19] = new SqlParameter("@FareInf", model.Leg == 1 ? 0 : model.FareInf);
+                objParam_order[20] = new SqlParameter("@TaxAdt", model.Leg == 1 ? 0 : model.TaxAdt);
+                objParam_order[21] = new SqlParameter("@TaxChd", model.Leg == 1 ? 0 : model.TaxChd);
+                objParam_order[22] = new SqlParameter("@TaxInf", model.Leg == 1 ? 0 : model.TaxInf);
+                objParam_order[23] = new SqlParameter("@FeeAdt", model.Leg == 1 ? 0 : model.FeeAdt);
+                objParam_order[24] = new SqlParameter("@FeeChd", model.Leg == 1 ? 0 : model.FeeChd);
+                objParam_order[25] = new SqlParameter("@FeeInf", model.Leg == 1 ? 0 : model.FeeInf);
                 objParam_order[26] = new SqlParameter("@ServiceFeeAdt", model.ServiceFeeAdt);
                 objParam_order[27] = new SqlParameter("@ServiceFeeChd", model.ServiceFeeChd);
                 objParam_order[28] = new SqlParameter("@ServiceFeeInf", model.ServiceFeeInf);
-                objParam_order[29] = new SqlParameter("@AmountAdt", model.AmountAdt);
-                objParam_order[30] = new SqlParameter("@AmountChd", model.AmountChd);
-                objParam_order[31] = new SqlParameter("@AmountInf", model.AmountInf);
-                objParam_order[32] = new SqlParameter("@TotalNetPrice", model.TotalNetPrice);
+                objParam_order[29] = new SqlParameter("@AmountAdt", model.Leg == 1 ? 0 : model.AmountAdt);
+                objParam_order[30] = new SqlParameter("@AmountChd", model.Leg == 1 ? 0 : model.AmountChd);
+                objParam_order[31] = new SqlParameter("@AmountInf", model.Leg == 1 ? 0 : model.AmountInf);
+                objParam_order[32] = new SqlParameter("@TotalNetPrice", model.Leg == 1 ? 0 : model.TotalNetPrice);
                 objParam_order[33] = new SqlParameter("@TotalDiscount", model.TotalDiscount);
-                objParam_order[34] = new SqlParameter("@TotalCommission", model.TotalCommission);
+                objParam_order[34] = new SqlParameter("@TotalCommission", model.Leg == 1 ? 0 : model.TotalCommission);
                 objParam_order[35] = new SqlParameter("@TotalBaggageFee", model.TotalBaggageFee);
                 objParam_order[36] = new SqlParameter("@StartDate", model.StartDate);
                 objParam_order[37] = new SqlParameter("@EndDate", model.EndDate);
                 objParam_order[38] = new SqlParameter("@BookingId", model.BookingId);
                 objParam_order[39] = new SqlParameter("@Status", model.Status);
-                objParam_order[40] = new SqlParameter("@Profit", model.Profit);
+                objParam_order[40] = new SqlParameter("@Profit", model.Leg==1?0: model.Profit);
                 if (model.ServiceCode != null)
                 {
                     objParam_order[41] = new SqlParameter("@ServiceCode", model.ServiceCode);
@@ -1061,9 +1062,9 @@ namespace APP.CHECKOUT_SERVICE.Model
                     objParam_order[47] = new SqlParameter("@Note", DBNull.Value);
 
                 }
-                objParam_order[48] = new SqlParameter("@ProfitAdt", model.ProfitAdt);
-                objParam_order[49] = new SqlParameter("@ProfitChd", model.ProfitChd);
-                objParam_order[50] = new SqlParameter("@ProfitInf", model.ProfitInf);  
+                objParam_order[48] = new SqlParameter("@ProfitAdt", model.ProfitAdt == double.NaN?0: model.ProfitAdt);
+                objParam_order[49] = new SqlParameter("@ProfitChd", model.ProfitChd == double.NaN ? 0 : model.ProfitChd);
+                objParam_order[50] = new SqlParameter("@ProfitInf", model.ProfitInf == double.NaN ? 0 : model.ProfitInf);  
                 objParam_order[51] = new SqlParameter("@AdgCommission", model.Adgcommission);
                 objParam_order[52] = new SqlParameter("@OthersAmount", model.OthersAmount);
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.CreateFlyBookingDetail, objParam_order);
@@ -1116,7 +1117,7 @@ namespace APP.CHECKOUT_SERVICE.Model
                 {
                     dt_fly_segment[12] = new SqlParameter("@StopPoint", DBNull.Value);
                 }
-                dt_fly_segment[13] = new SqlParameter("@StopTime", fly_segment.StopTime);
+                dt_fly_segment[13] = new SqlParameter("@StopTime", fly_segment.StopTime==null?1: fly_segment.StopTime);
 
                 if (fly_segment.AllowanceBaggage != null)
                 {
@@ -2198,32 +2199,39 @@ namespace APP.CHECKOUT_SERVICE.Model
             }
 
         }
-        public static int CreateHotelBookingRoomExtraPackages(HotelBookingRoomExtraPackages booking)
+        public static int CreateHotelBookingRoomExtraPackages(HotelBookingRoomExtraPackages packages)
         {
             try
             {
 
                 SqlParameter[] objParam_order = new SqlParameter[17];
-                objParam_order[0] = new SqlParameter("@PackageId", booking.PackageId);
-                objParam_order[1] = new SqlParameter("@PackageCode", booking.PackageCode);
-                objParam_order[2] = new SqlParameter("@HotelBookingId", booking.HotelBookingId);
-                objParam_order[3] = new SqlParameter("@HotelBookingRoomID", booking.HotelBookingRoomId);
-                objParam_order[4] = new SqlParameter("@Amount", booking.Amount);
-                objParam_order[5] = new SqlParameter("@StartDate", booking.StartDate);
-                objParam_order[6] = new SqlParameter("@EndDate", booking.EndDate);
-                objParam_order[7] = new SqlParameter("@Profit", booking.Profit);
-                objParam_order[8] = new SqlParameter("@PackageCompanyId", booking.PackageCompanyId);
-                objParam_order[9] = new SqlParameter("@OperatorPrice", booking.OperatorPrice);
-                objParam_order[10] = new SqlParameter("@SalePrice", booking.SalePrice);
-                objParam_order[11] = new SqlParameter("@Nights", booking.Nights);
-                objParam_order[12] = new SqlParameter("@Quantity", booking.Quantity);
-                objParam_order[13] = new SqlParameter("@CreatedBy", booking.CreatedBy);
-                objParam_order[14] = new SqlParameter("@CreatedDate", DBNull.Value);
-                objParam_order[15] = new SqlParameter("@UnitPrice", booking.SupplierId);
-                objParam_order[16] = new SqlParameter("@SupplierId", booking.UnitPrice);
+                objParam_order[0] = new SqlParameter("@PackageId", packages.PackageId);
+                objParam_order[1] = new SqlParameter("@PackageCode", packages.PackageCode);
+                objParam_order[2] = new SqlParameter("@HotelBookingId", packages.HotelBookingId);
+                objParam_order[3] = new SqlParameter("@HotelBookingRoomID", packages.HotelBookingRoomId);
+                objParam_order[4] = new SqlParameter("@Amount", packages.Amount);
+                objParam_order[5] = new SqlParameter("@CreatedBy", packages.CreatedBy);
+                objParam_order[6] = new SqlParameter("@CreatedDate", packages.CreatedDate);
+                objParam_order[7] = new SqlParameter("@StartDate", packages.StartDate);
+                objParam_order[8] = new SqlParameter("@EndDate", packages.EndDate);
+                objParam_order[9] = new SqlParameter("@Profit", packages.Profit);
+                objParam_order[10] = new SqlParameter("@PackageCompanyId", packages.PackageCompanyId);
+                objParam_order[11] = new SqlParameter("@OperatorPrice", packages.OperatorPrice);
+                objParam_order[12] = new SqlParameter("@SalePrice", packages.SalePrice);
+                objParam_order[13] = new SqlParameter("@Nights", packages.Nights);
+                objParam_order[14] = new SqlParameter("@Quantity", packages.Quantity);
+                objParam_order[15] = new SqlParameter("@UnitPrice", packages.UnitPrice);
+                if (packages.SupplierId != null)
+                {
+                    objParam_order[16] = new SqlParameter("@SupplierId", packages.SupplierId);
+                }
+                else
+                {
+                    objParam_order[16] = new SqlParameter("@SupplierId", DBNull.Value);
+                }
 
                 var id = DBWorker.ExecuteNonQuery(StoreProcedureConstant.SP_InsertHotelBookingRoomExtraPackages, objParam_order);
-                booking.Id = id;
+                packages.Id = id;
                 return id;
             }
             catch (Exception ex)

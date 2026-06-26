@@ -13,7 +13,7 @@ namespace APP.CHECKOUT_SERVICE.ViewModel.Order
         public DateTimeOffset StartTime { get; set; }
         public DateTimeOffset EndTime { get; set; }
         public string FlightNumber { get; set; }
-        public int Duration { get; set; }
+        public string Duration { get; set; } 
         public string Class { get; set; }
         public string Plane { get; set; }
         public string? StartTerminal { get; set; }

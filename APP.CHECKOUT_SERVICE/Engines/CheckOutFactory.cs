@@ -43,6 +43,8 @@ namespace APP.CHECKOUT_SERVICE.Engines
             try
             {
                 Console.WriteLine("Input: " + JsonConvert.SerializeObject(order_info));
+                Telegram.pushLog("APP.CHECKOUT_SERVICE - OrderHotelRentsService - DoSomeRealWork: "
+                                         + "Input: " + JsonConvert.SerializeObject(order_info));
                 //0. Detect dịch vụ
                 switch (order_info.service_type)
                 {
@@ -108,6 +110,9 @@ namespace APP.CHECKOUT_SERVICE.Engines
                                         //1.1. Tạo đơn hàng + Tạo chi tiết đơn hàng  (MINH)
                                         HotelRentOrderSummit order_summit = hotel_service.HotelRentSummitFromMessage(order_info).Result;
                                         if (order_summit == null) break;
+                                        //Telegram.pushLog("APP.CHECKOUT_SERVICE - OrderHotelRentsService - HotelRentSummitFromMessage: " 
+                                        //    + order_summit.obj_order.OrderNo 
+                                        //    +"\nVoucher: "+order_summit.obj_order.VoucherId != null?order_summit.obj_order.VoucherId.ToString():"NULL");
                                         int order_id = hotel_service.createOrder(order_summit, order_info);
                                         // nếu tạo đơn ko thành công, không thực hiện gửi mail (lỗi đã báo trong hàm tạo đơn):
                                         if (order_id < 0) break;

@@ -109,7 +109,14 @@ namespace APP.CHECKOUT_SERVICE.Engines.Notify
 
             try
             {
-                var client = Repository.getClientDetail((long)orderItems.ClientId);
+                try
+                {
+                    var client = Repository.getClientDetail((long)orderItems.ClientId);
+                }
+                catch
+                {
+                    return false;
+                }
                 HttpClient httpClient = new HttpClient();
                 string payment_type_string = "CHUYỂN KHOẢN TRỰC TIẾP";
                 string payment_type_old = "CHUYỂN KHOẢN TRỰC TIẾP";
