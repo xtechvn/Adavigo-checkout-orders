@@ -46,33 +46,33 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                 }
                 //-- Check if Order Valid:
                 var dataTable = Repository.CheckIfNewOrderValid(order_info.obj_order);
-                if (dataTable.Tables.Count < 3)
-                {
-                    Telegram.pushLog("APP.CHECKOUT_SERVICE - CheckIfNewOrderValid: SP not Excute with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    Console.WriteLine("APP.CHECKOUT_SERVICE - CheckIfNewOrderValid: SP not Excute with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    return -1;
-                }
-                if (dataTable.Tables[0].AsEnumerable().Count() <= 0)
-                {
-                    var list = dataTable.Tables[0].AsEnumerable();
-                    var list_order = JsonConvert.DeserializeObject<List<APP.CHECKOUT_SERVICE.ViewModel.Order.Order>>(JsonConvert.SerializeObject(list));
-                    Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: Order Not Found / Invalid with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    Console.WriteLine("APP.CHECKOUT_SERVICE - createOrder: Order Not Found / Invalid with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //if (dataTable.Tables.Count < 3)
+                //{
+                //    Telegram.pushLog("APP.CHECKOUT_SERVICE - CheckIfNewOrderValid: SP not Excute with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    Console.WriteLine("APP.CHECKOUT_SERVICE - CheckIfNewOrderValid: SP not Excute with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    return -1;
+                //}
+                //if (dataTable.Tables[0].AsEnumerable().Count() <= 0)
+                //{
+                //    var list = dataTable.Tables[0].AsEnumerable();
+                //    var list_order = JsonConvert.DeserializeObject<List<APP.CHECKOUT_SERVICE.ViewModel.Order.Order>>(JsonConvert.SerializeObject(list));
+                //    Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: Order Not Found / Invalid with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    Console.WriteLine("APP.CHECKOUT_SERVICE - createOrder: Order Not Found / Invalid with " + JsonConvert.SerializeObject(order_info.obj_order));
 
-                    return -1;
-                }
-                if (dataTable.Tables[1].AsEnumerable().Count() <= 0)
-                {
-                    Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: ClientID / AccountClient Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    Console.WriteLine("APP.CHECKOUT_SERVICE - createOrder: ClientID / AccountClient Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    return -1;
-                }
-                if (dataTable.Tables[2].AsEnumerable().Count() <= 0)
-                {
-                    Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: ContractID Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    Console.WriteLine("APP.CHECKOUT_SERVICE - createOrder: ContractID Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
-                    return -1;
-                }
+                //    return -1;
+                //}
+                //if (dataTable.Tables[1].AsEnumerable().Count() <= 0)
+                //{
+                //    Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: ClientID / AccountClient Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    Console.WriteLine("APP.CHECKOUT_SERVICE - createOrder: ClientID / AccountClient Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    return -1;
+                //}
+                //if (dataTable.Tables[2].AsEnumerable().Count() <= 0)
+                //{
+                //    Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: ContractID Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    Console.WriteLine("APP.CHECKOUT_SERVICE - createOrder: ContractID Incorrect or not Found with " + JsonConvert.SerializeObject(order_info.obj_order));
+                //    return -1;
+                //}
                 Console.WriteLine("Order New: " + order_info.obj_order.OrderNo);
 
                 //--Contact Client
@@ -99,6 +99,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                 if(order_info.obj_order.Amount==null || order_info.obj_order.Amount <= 0)
                 {
                     order_info.obj_order.Amount = order_info.obj_fly_booking.Sum(x => x.Amount);
+                    order_info.obj_order.Profit = order_info.obj_fly_booking.Sum(x => x.Profit);
                 }
                 if (order_info.obj_order.Note == null) order_info.obj_order.Note = "";
                var data_create_order = Repository.CreateOrder(order_info);
@@ -127,7 +128,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     fly_booking.Adgcommission = 0;
                     fly_booking.OthersAmount = 0;
                     //-- FlyBooking Detail
-                    var data_create_fly_book_detail = Repository.CreateFlyBookingDetail(fly_booking);
+                        var data_create_fly_book_detail = Repository.CreateFlyBookingDetail(fly_booking);
                     if (data_create_fly_book_detail < 0)
                     {
                         Telegram.pushLog("APP.CHECKOUT_SERVICE - createOrder: Cannot Create FlyBookingDetail" + JsonConvert.SerializeObject(fly_booking));
@@ -273,15 +274,39 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     foreach(var fly in order_summit.obj_fly_booking)
                     {
                         fly.ServiceCode = service_code;
-                        fly.PriceAdt = (fly.FareAdt + fly.TaxAdt + fly.FeeAdt + fly.ServiceFeeAdt) * fly.AdultNumber;
-                        fly.PriceChd = (fly.FareChd + fly.TaxChd + fly.FeeChd + fly.ServiceFeeChd) * fly.ChildNumber;
-                        fly.PriceInf = (fly.FareInf + fly.TaxInf + fly.FeeInf + fly.ServiceFeeInf) * fly.InfantNumber;
-                        fly.Price = fly.Amount - fly.Profit;
+                        
+                    
                         fly.Status = 0;
                         fly.Note = fly.Leg == 0 ? "Vé máy bay Chiều đi" : "Vé máy bay Chiều về";
-                        fly.ProfitAdt = fly.Profit / (double)(fly.AdultNumber + fly.ChildNumber) * fly.AdultNumber;
-                        fly.ProfitChd = fly.Profit / (double)(fly.AdultNumber + fly.ChildNumber) * fly.ChildNumber;
+                        fly.ProfitAdt = 50000 * fly.AdultNumber;
+                        fly.ProfitChd = 50000 * fly.ChildNumber;
                         fly.ProfitInf = 0;
+                        fly.Amount = (double)(fly.AmountInf + fly.AmountAdt + fly.AmountChd);
+                        fly.Profit = (double)(fly.ProfitAdt + fly.ProfitChd + fly.ProfitInf);
+                        fly.PriceAdt = fly.AmountAdt - fly.ProfitAdt;
+                        fly.PriceChd = fly.AmountChd - fly.ProfitAdt;
+                        fly.PriceInf = fly.AmountInf - fly.ProfitAdt;
+                        fly.Price = fly.Amount - fly.Profit;
+                        fly.FeeAdt = 50000 * fly.AdultNumber; 
+                        fly.FeeAdt = 50000 * fly.ChildNumber; 
+                        fly.FareAdt = fly.PriceAdt;
+                        fly.FareChd = fly.PriceChd;
+                        if (fly.Leg == 1)
+                        {
+                            fly.Amount = 0;
+                            fly.Profit = 0;
+                            fly.Price = 0;
+                            fly.PriceAdt = 0;
+                            fly.PriceChd = 0;
+                            fly.PriceInf = 0;
+                            fly.AmountAdt = 0;
+                            fly.AmountChd = 0;
+                            fly.AmountInf = 0;
+                            fly.FareAdt = 0;
+                            fly.FareChd = 0;
+                            fly.FareInf = 0;
+                        }
+
                     }
                 }
                 //if (order_summit == null || order_summit.obj_order==null || order_summit.obj_order.Amount<=0)
@@ -318,6 +343,12 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                     order_summit.obj_contact_client.Email = order_summit.obj_contact_client.Email.Length > 50 ? order_summit.obj_contact_client.Email.Substring(0, 50) : order_summit.obj_contact_client.Email;
 
                 }
+                order_summit.obj_order = new OrderViewModel();
+                order_summit.obj_order.Id = data.order_id;
+                order_summit.obj_order.OrderNo = data.order_no;
+                order_summit.obj_order.ClientId = Convert.ToInt32(client.ClientId);
+                order_summit.obj_order.AccountClientId = Convert.ToInt32(data.account_client_id);
+                data.client_id = client.ClientId.ToString();
             }
             catch (Exception ex)
             {
@@ -350,13 +381,13 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                 {
                     var resultContent_2 = Newtonsoft.Json.Linq.JObject.Parse(response.Content.ReadAsStringAsync().Result);
                     result = JsonConvert.DeserializeObject<List<BookingFlyMongoDbModel>>(resultContent_2["data"].ToString());
-                    if (result.Count > 0)
-                    {
-                        if (result[0].booking_id == 0 && (result[0].booking_data.ListBooking[0].BookingCode == null || result[0].booking_data.ListBooking[0].BookingCode.Trim() == ""))
-                        {
-                            result = null;
-                        }
-                    }
+                    //if (result.Count > 0)
+                    //{
+                    //    if (result[0].booking_id == 0 && (result[0].booking_data.ListBooking[0].BookingCode == null || result[0].booking_data.ListBooking[0].BookingCode.Trim() == ""))
+                    //    {
+                    //        result = null;
+                    //    }
+                    //}
                     /* if (result==null || result.Count < 0)
                     {
                         Telegram.pushLog("APP.CHECKOUT_SERVICE - GetBookingDataFromAPI: Cannot Get Booking Detail from API ["+url+"] - Token:"+token);
@@ -410,7 +441,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
             try
             {
                 var orderInfo_old = Repository.getOrderDetailBigint(order_info.order_id);
-                if (orderInfo_old.PaymentType != Convert.ToInt32(order_info.payment_type))
+                if (orderInfo_old!=null && orderInfo_old.PaymentType != Convert.ToInt32(order_info.payment_type))
                 {
                     var orderInfo = Repository.UpdateOrderPayment(order_info.order_id, Convert.ToInt32(order_info.payment_type));
                     OrderWithOldPaymentType result = JsonConvert.DeserializeObject<OrderWithOldPaymentType>(JsonConvert.SerializeObject(orderInfo));
@@ -797,6 +828,7 @@ namespace APP.CHECKOUT_SERVICE.Engines.Order
                                 fly_booking_item.segments = new List<FlyingSegmentViewModel>();
                                 foreach (var segment in flight_detail.ListSegment)
                                 {
+                                   
                                     var seg = JsonConvert.DeserializeObject<FlyingSegmentViewModel>(JsonConvert.SerializeObject(segment));
                                     seg.AllowanceBaggageValue = CommonHelper.GetWeightFromString(seg.AllowanceBaggage);
                                     seg.HandBaggageValue = CommonHelper.GetWeightFromString(seg.HandBaggage);
